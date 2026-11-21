@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'role'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -28,5 +28,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Proyek yang dipasang oleh user ini (sebagai klien)
+    public function projects()
+    {
+        return $this->hasMany(Project::class, 'client_id');
+    }
+
+    // Penawaran yang diajukan user ini (sebagai developer)
+    public function bids()
+    {
+        return $this->hasMany(Bid::class, 'developer_id');
     }
 }
