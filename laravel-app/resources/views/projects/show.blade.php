@@ -40,6 +40,7 @@
                 @endif
             </div>
 
+            {{-- Form penawaran: hanya developer, proyek masih terbuka --}}
             @if (auth()->user()->role === 'developer' && $project->status === 'open')
                 <div class="bg-white shadow-sm sm:rounded-lg p-6">
                     <h3 class="font-semibold mb-3">Ajukan Penawaran</h3>

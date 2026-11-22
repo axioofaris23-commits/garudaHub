@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BidController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Support\Facades\Route;
@@ -17,7 +18,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Semua user yang login boleh melihat daftar proyek
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 });
 
@@ -28,6 +28,13 @@ Route::middleware(['auth', 'role:client'])->group(function () {
     Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
+    Route::post('/bids/{bid}/accept', [BidController::class, 'accept'])->name('bids.accept');
+});
+
+// Khusus developer
+Route::middleware(['auth', 'role:developer'])->group(function () {
+    Route::post('/projects/{project}/bids', [BidController::class, 'store'])->name('bids.store');
 });
 
 Route::middleware('auth')->group(function () {
