@@ -29,7 +29,7 @@ Website lelang proyek IT: klien memasang proyek, developer menawar, klien memili
 1. Klon repositori ini lalu masuk ke foldernya.
 2. Impor skema dan data dummy:
    ```
-   mysql -u root -p < src/database.sql
+   mysql -u root -p < legacy-src/database.sql
    ```
    Ini membuat database `garuda_hub` dan **menghapus** tabel `users`, `projects`, `bids` jika sudah ada.
 3. (Opsional) Atur koneksi database lewat variabel lingkungan:
@@ -45,7 +45,7 @@ Website lelang proyek IT: klien memasang proyek, developer menawar, klien memili
    Contoh: `export GH_DB_USER=nama_pengguna_anda`
 4. Jalankan server bawaan PHP:
    ```
-   php -S localhost:8000 -t src
+   php -S localhost:8000 -t legacy-src
    ```
 5. Buka `http://localhost:8000`.
 
@@ -55,8 +55,8 @@ Data awal berisi akun fiktif berdomain `example.com`: satu admin (`admin@example
 
 ## Struktur
 
-- `src/index.php`: seluruh aplikasi (routing lewat `?page=`)
-- `src/database.sql`: skema dan data dummy
+- `legacy-src/index.php`: seluruh aplikasi (routing lewat `?page=`)
+- `legacy-src/database.sql`: skema dan data dummy
 
 ## Panduan pemakaian
 
@@ -65,3 +65,58 @@ Lihat folder `docs/user/` bila tersedia.
 ## Lisensi
 
 MIT. Lihat [LICENSE](LICENSE).
+
+## Garuda-Hub (Versi Laravel)
+
+Refactoring dari PHP Native (spaghetti code) ke Laravel dengan arsitektur MVC dan Eloquent ORM.
+
+### Kebutuhan (Versi Laravel)
+
+- PHP 8.3 atau lebih baru dengan ekstensi `pdo_mysql`
+- Composer
+- Node.js 20.19 atau lebih baru dan npm
+- MySQL atau MariaDB
+
+### Skema Database
+
+- `users` (id, name, email, password, role: client/developer/admin)
+- `projects` (id, client_id -> users, title, description, category, budget, bid_deadline, status, winning_bid_id -> bids)
+- `bids` (id, project_id -> projects, developer_id -> users, price, duration_days, proposal, status; unik per project_id + developer_id)
+
+### Fitur
+
+- Autentikasi (Laravel Breeze) dengan peran Klien dan Developer
+- CRUD proyek oleh klien
+- Developer mengajukan penawaran (satu penawaran per proyek)
+- Klien memilih pemenang (transaksi database)
+
+### Cara Menjalankan
+
+1. Buat database kosong bernama `garuda_hub_laravel` (misalnya lewat phpMyAdmin).
+2. Jalankan perintah berikut:
+
+        cd laravel-app
+        composer install
+        copy .env.example .env
+        php artisan key:generate
+
+3. Buka file `.env`, lalu atur bagian database seperti ini (hapus tanda `#` di depan baris yang diawali `#` jika ada):
+
+        DB_CONNECTION=mysql
+        DB_HOST=127.0.0.1
+        DB_PORT=3306
+        DB_DATABASE=garuda_hub_laravel
+        DB_USERNAME=root
+        DB_PASSWORD=
+
+   Sesuaikan `DB_USERNAME` dan `DB_PASSWORD` dengan pengaturan MySQL kamu.
+4. Lanjutkan:
+
+        php artisan migrate --seed
+        npm install
+        npm run build
+        php artisan serve
+
+Akun admin dari seeder: `admin@example.com` / `password`
+
+Kode lama (PHP Native) disimpan di folder `legacy-src` sebagai referensi.
