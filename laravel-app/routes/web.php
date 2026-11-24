@@ -1,7 +1,5 @@
 <?php
 
-#Nama : Septyan Alfaris Pasau 
-#NIM : 252410102081
 use App\Http\Controllers\BidController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
