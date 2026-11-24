@@ -1,5 +1,7 @@
 <?php
 
+#Nama : Septyan Alfaris Pasau 
+#NIM : 252410102081
 use App\Http\Controllers\BidController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -21,7 +23,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 });
 
-// Khusus klien (HARUS sebelum route /projects/{project})
 Route::middleware(['auth', 'role:client'])->group(function () {
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
@@ -32,7 +33,6 @@ Route::middleware(['auth', 'role:client'])->group(function () {
     Route::post('/bids/{bid}/accept', [BidController::class, 'accept'])->name('bids.accept');
 });
 
-// Khusus developer
 Route::middleware(['auth', 'role:developer'])->group(function () {
     Route::post('/projects/{project}/bids', [BidController::class, 'store'])->name('bids.store');
 });
